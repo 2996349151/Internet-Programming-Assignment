@@ -7,10 +7,22 @@ class MYDB:
         self.DATABASE_URL = "mysql+pymysql://root@localhost:3306/Shopping_websiteDB"
         self.engine = create_engine(self.DATABASE_URL)
     
-    # Get Products
+    # Get All Products
     def get_products(self):
         with self.engine.connect() as connection:
             products = connection.execute(text("SELECT * FROM Products")).fetchall()
+            return products
+        
+    # Get Products by Category
+    def get_products_by_category(self, category):
+        with self.engine.connect() as connection:
+            products = connection.execute(text("SELECT * FROM Products WHERE Category = :category"), {"category": category}).fetchall()
+            return products
+        
+    # Get Products by Sub_category
+    def get_products_by_sub_category(self, sub_category):
+        with self.engine.connect() as connection:
+            products = connection.execute(text("SELECT * FROM Products WHERE Sub_category = :sub_category"), {"sub_category": sub_category}).fetchall()
             return products
         
     # Get Orders
@@ -19,6 +31,12 @@ class MYDB:
             orders = connection.execute(text("SELECT * FROM Orders")).fetchall()
             return orders
         
+    # Get Order by User_id
+    def get_orders_by_user_id(self, user_id):
+        with self.engine.connect() as connection:
+            orders = connection.execute(text("SELECT * FROM Orders WHERE User_id = :user_id"), {"user_id": user_id}).fetchall()
+            return orders
+
     # Get Users
     def get_users(self):
         with self.engine.connect() as connection:

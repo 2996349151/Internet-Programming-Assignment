@@ -1,4 +1,4 @@
--- Active: 1744610764034@@127.0.0.1@3306
+-- Active: 1744610764034@@127.0.0.1@3306@Shopping_websiteDB
 DROP DATABASE IF EXISTS Shopping_websiteDB;
 CREATE DATABASE Shopping_websiteDB;
 USE Shopping_websiteDB;
@@ -8,6 +8,13 @@ CREATE TABLE Products (
     Product_name VARCHAR(255) NOT NULL,
     Price INT NOT NULL,
     Unit INT NOT NULL,
+    Category ENUM('electronics', 'clothing', 'home_appliances', 'books', 'food') NOT NULL,
+    Sub_category ENUM('mobile', 'laptop', 'tv', 
+                    'shirt', 'pants', 'hat', 
+                    'kitchen_appliances', 'furniture', 'desk', 'chair', 
+                    'fiction', 'non_fiction', 'educational', 
+                    'beef', 'apple', 'banana') 
+                    NOT NULL,
 
     CHECK (Price > 0),
     CHECK (Unit > 0)
@@ -23,6 +30,7 @@ CREATE TABLE Users (
 
 CREATE TABLE Orders (
     Order_id INT PRIMARY KEY AUTO_INCREMENT,
+    Order_number INT NOT NULL,
     Order_unit INT NOT NULL,
     Cost INT NOT NULL,
     Mobile_number VARCHAR(15) NOT NULL,
@@ -41,20 +49,36 @@ CREATE TABLE Orders (
     CHECK (Cost > 0)
 );
 
-Insert into Products (Product_name, Price, Unit) values
-('Apple', 5, 10000),
-('Banana', 3, 10000),
-('Orange', 4, 10000),
-('Grapes', 6, 10000),
-('Mango', 8, 10000);
+-- Insert sample data into Products table
+INSERT INTO Products (Product_name, Price, Unit, Category, Sub_category) VALUES
+('iPhone 14', 1200, 50, 'electronics', 'mobile'),
+('Samsung Galaxy S23', 1000, 40, 'electronics', 'mobile'),
+('Google Pixel 7', 900, 30, 'electronics', 'mobile'),
+('MacBook Pro', 2500, 20, 'electronics', 'laptop'),
+('Dell XPS 13', 2000, 25, 'electronics', 'laptop'),
+('Samsung TV', 800, 15, 'electronics', 'tv'),
+('T-shirt', 20, 100, 'clothing', 'shirt'),
+('Jeans', 50, 80, 'clothing', 'pants'),
+('Baseball Cap', 15, 150, 'clothing', 'hat'),
+('Apple', 2, 300, 'food', 'apple'),
+('Banana', 1, 400, 'food', 'banana'),
+('Orange', 3, 200, 'food', 'banana');
 
-Insert into Users (User_name, Email, Password, Role) values
-('admin', 'admin@gmail.com', '123456', 'admin'),
-('user1', 'uesr1@gmail.com', '654321', 'user');
+-- Insert sample data into Users table
+INSERT INTO Users (User_name, Email, Password, Role) VALUES
+('admin', 'admin@example.com', 'admin123', 'admin'),
+('john_doe', 'john.doe@example.com', 'password123', 'user'),
+('jane_smith', 'jane.smith@example.com', 'password456', 'user'),
+('alice_brown', 'alice.brown@example.com', 'password789', 'user'),
+('bob_white', 'bob.white@example.com', 'password101', 'user');
 
-Insert into Orders (Order_unit, Cost, Mobile_number, Recipient_name, Recipient_email, Street, City, State, User_id, Product_id) values
-(2, 10, '1234567890', 'John Doe', 'johndoe@gmail.com', '123 Main St', 'New York', 'NY', 1, 1), -- 2 Apples
-(3, 9, '0987654321', 'Jane Smith', 'janesmith@gmail.com', '456 Elm St', 'Los Angeles', 'CA', 2, 2), -- 3 Bananas
-(1, 4, '1122334455', 'Alice Brown', 'alicebrown@gmail.com', '789 Pine St', 'Chicago', 'IL', 1, 3), -- 1 Orange
-(5, 30, '2233445566', 'Bob White', 'bobwhite@gmail.com', '321 Oak St', 'Houston', 'TX', 2, 4), -- 5 Grapes
-(4, 32, '3344556677', 'Charlie Black', 'charlieblack@gmail.com', '654 Maple St', 'Phoenix', 'AZ', 1, 5); -- 4 Mangoes
+-- Insert sample data into Orders table
+-- Order 1: John Doe orders multiple products
+INSERT INTO Orders (Order_number, Order_unit, Cost, Mobile_number, Recipient_name, Recipient_email, Street, City, State, User_id, Product_id) VALUES
+(1, 2, 2400, '0412345678', 'John Doe', 'john.doe@example.com', '123 King St', 'Sydney', 'NSW', 2, 1), 
+(1, 1, 1000, '0412345678', 'John Doe', 'john.doe@example.com', '123 King St', 'Sydney', 'NSW', 2, 2), 
+(1, 3, 60, '0412345678', 'John Doe', 'john.doe@example.com', '123 King St', 'Sydney', 'NSW', 2, 10), 
+(2, 1, 2500, '0423456789', 'Jane Smith', 'jane.smith@example.com', '456 Queen St', 'Melbourne', 'VIC', 3, 4), 
+(2, 2, 40, '0423456789', 'Jane Smith', 'jane.smith@example.com', '456 Queen St', 'Melbourne', 'VIC', 3, 11), 
+(3, 1, 800, '0434567890', 'Alice Brown', 'alice.brown@example.com', '789 George St', 'Brisbane', 'QLD', 4, 6), 
+(3, 5, 75, '0434567890', 'Alice Brown', 'alice.brown@example.com', '789 George St', 'Brisbane', 'QLD', 4, 12); 
