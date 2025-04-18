@@ -86,9 +86,9 @@ def register_user(username: str, email: str, password: str):
 @app.get("/login/username={username}&password={password}")
 def login_user(username: str, password: str):
     if DB.check_authentication(username, password):
-        return {"message": "Login successful"}
+        return {"code": 1, "message": "Login successful"}
     else:
-        return {"error": "Invalid username or password"}
+        return {"code": 0, "message": "Invalid username or password"}
     
 # Place order
 @app.get("/place_order/username={username}" \

@@ -62,7 +62,7 @@ INSERT INTO Products (Product_name, Price, Unit, Category, Sub_category) VALUES
 ('Baseball Cap', 15, 150, 'clothing', 'hat'),
 ('Apple', 2, 300, 'food', 'apple'),
 ('Banana', 1, 400, 'food', 'banana'),
-('Orange', 3, 200, 'food', 'banana');
+('Good Banana', 3, 200, 'food', 'banana');
 
 -- Insert sample data into Users table
 INSERT INTO Users (User_name, Email, Password, Role) VALUES
