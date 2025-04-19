@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from database import MYDB
+from pydantic import BaseModel
 
 app = FastAPI()
 
@@ -62,68 +63,83 @@ def show_users():
     return {"users": users}
 
 #Get user history
-@app.get("/users/username={user_name}&password={password}")
-def show_user_history(user_name, password):
-    if not check_Authentication(user_name, password):
+class UserHistoryRequest(BaseModel):
+    username: str
+    password: str
+@app.post("/history")
+def show_user_history(user_history_request: UserHistoryRequest):
+    if not check_Authentication(user_history_request.username, user_history_request.password):
         return {"error": "Authentication failed"}
     
-    user_id = DB.get_user_id(user_name)
+    user_id = DB.get_user_id(user_history_request.username)
     if user_id is None:
         return {"error": "User not found"}
-    orders = DB.show_order_history(user_id)
+    if user_id == 1:
+        orders = DB.get_orders()
+    else:
+        orders = DB.show_order_history(user_id)
+
     orders = [dict(row._mapping) for row in orders]
     return {"orders": orders}
 
-# Register
-@app.get("/register/username={username}&email={email}&password={password}")
-def register_user(username: str, email: str, password: str):
-    if DB.register_user(username, email, password):
-        return {"message": "User registered successfully"}
-    else:
-        return {"error": "Email already exists"}
+# @app.get("/users/username={user_name}&password={password}")
+# def show_user_history(user_name, password):
+#     if not check_Authentication(user_name, password):
+#         return {"error": "Authentication failed"}
     
-# Login
-@app.get("/login/username={username}&password={password}")
-def login_user(username: str, password: str):
-    if DB.check_authentication(username, password):
+#     user_id = DB.get_user_id(user_name)
+#     if user_id is None:
+#         return {"error": "User not found"}
+#     orders = DB.show_order_history(user_id)
+#     orders = [dict(row._mapping) for row in orders]
+#     return {"orders": orders}
+
+    
+# login
+class LoginRequest(BaseModel):
+    username: str
+    password: str
+
+@app.post("/login")
+def login_user(login_request: LoginRequest):
+    if DB.check_authentication(login_request.username, login_request.password):
         return {"code": 1, "message": "Login successful"}
     else:
         return {"code": 0, "message": "Invalid username or password"}
-    
-# Place order
-@app.get("/place_order/username={username}" \
-        "&password={password}" \
-        "&order_unit_list={order_unit_list}" \
-        "&cost_list={cost_list}" \
-        "&mobile_number={mobile_number}" \
-        "&recipient_name={recipient_name}" \
-        "&recipient_email={recipient_email}" \
-        "&street={street}" \
-        "&city={city}" \
-        "&state={state}" \
-        "&user_id={user_id}" \
-        "&product_id_list={product_id_list}")
-def place_order(username,
-                password, 
-                order_unit_list,
-                cost_list,
-                mobile_number,
-                recipient_name,
-                recipient_email,
-                street,
-                city,
-                state,
-                product_id_list):
-    if not check_Authentication(username, password):
-        return {"error": "Authentication failed"}
-    
-    order_unit_list = order_unit_list.split(",")
-    order_unit_list = [int(i) for i in order_unit_list]
-    cost_list = cost_list.split(",")
-    cost_list = [float(i) for i in cost_list]
-    product_id_list = product_id_list.split(",")
-    product_id_list = [int(i) for i in product_id_list]
-    user_id = DB.get_user_id(username)
 
-    DB.place_order(order_unit_list, cost_list, mobile_number, recipient_name, recipient_email, street, city, state, user_id, product_id_list)
+# Place the order using JSON payload
+class OrderRequest(BaseModel):
+    username: str
+    password: str
+    order_unit_list: list[int]
+    cost_list: list[int]
+    mobile_number: str
+    recipient_name: str
+    recipient_email: str
+    street: str
+    city: str
+    state: str
+    product_id_list: list[int]
+    order_number: int
+
+@app.post("/place_order")
+def place_order(order: OrderRequest):
+    if not check_Authentication(order.username, order.password):
+        return {"error": "Authentication failed"}
+    user_id = DB.get_user_id(order.username)
+    if user_id is None:
+        return {"error": "User not found"}
+    DB.place_order(
+        order.order_number,
+        order.order_unit_list, 
+        order.cost_list, 
+        order.mobile_number, 
+        order.recipient_name, 
+        order.recipient_email, 
+        order.street, 
+        order.city, 
+        order.state, 
+        user_id, 
+        order.product_id_list,
+        )
     return {"message": "Order placed successfully"}

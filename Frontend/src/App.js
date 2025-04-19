@@ -3,12 +3,15 @@ import { Routes, Route } from 'react-router-dom';
 import { DatePicker } from 'antd';
 
 // import components as follows
-import Home from './pages/Home';
 import Products from './pages/Products';
+import OrderHistory from './pages/Order_history';
+import DeliveryDetails from './pages/Delivery_details';
 function App() {
   return (
     <Routes>
       <Route path="/products" element={<Products />} />
+      <Route path="/history" element={<OrderHistory />} />
+      <Route path="/delivery" element={<DeliveryDetails />} />
     </Routes>
   );
 }

@@ -89,16 +89,19 @@ class MYDB:
             return orders
 
     # Plase Orders
-    def place_order(self, order_unit_list, cost_list, mobile_number, recipient_name, recipient_email, street, city, state, user_id, product_id_list):
+    def place_order(self, order_number, order_unit_list, cost_list, mobile_number, recipient_name, recipient_email, street, city, state, user_id, product_id_list):
         with self.engine.connect() as connection:
+            transaction = connection.begin()
             for i in range(len(order_unit_list)):
-                connection.execute(text("INSERT INTO Orders (Order_unit, Cost, Mobile_number, Recipient_name, Recipient_email, Street, City, State, User_id, Product_id) " \
-                                        "VALUES (:order_unit, :cost, :mobile_number, :recipient_name, :recipient_email, :street, :city, :state, :user_id, :product_id)"), 
-                                    {"order_unit": order_unit_list[i], "cost": cost_list[i], "mobile_number": mobile_number, "recipient_name": recipient_name,
+                connection.execute(text("INSERT INTO Orders (Order_number, Order_unit, Cost, Mobile_number, Recipient_name, Recipient_email, Street, City, State, User_id, Product_id) " \
+                                        "VALUES (:order_number, :order_unit, :cost, :mobile_number, :recipient_name, :recipient_email, :street, :city, :state, :user_id, :product_id)"), 
+                                    {"order_number": order_number, "order_unit": order_unit_list[i], "cost": cost_list[i], "mobile_number": mobile_number, "recipient_name": recipient_name,
                                     "recipient_email": recipient_email, "street": street, "city": city, "state": state,"user_id": user_id,"product_id": product_id_list[i]}
                 )
                 
                 # Update product unit
-                connection.execute(text("UPDATE Products SET Product_unit = Prpduct_unit - :order_unit WHERE Product_id = :product_id"), 
+                connection.execute(text("UPDATE Products SET Unit = Unit - :order_unit WHERE Product_id = :product_id"), 
                                     {"order_unit": order_unit_list[i], "product_id": product_id_list[i]}
                 )
+            transaction.commit()
+        

@@ -1,6 +1,6 @@
 import React, { Children, use, useEffect, useState, useContext } from 'react';
 import { SearchOutlined } from '@ant-design/icons';
-import { data, useNavigate } from 'react-router-dom';
+import { data, Scripts, useNavigate } from 'react-router-dom';
 import { Button, Table, Input, Space, Menu, Modal } from 'antd';
 import { GlobalContext } from '../GlobalContext';
 import { getProducts } from '../api/api';
@@ -14,9 +14,10 @@ function Products() {
   const [searchValue, setSearchValue] = useState('');
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isCartModalOpen, setIsCartModalOpen] = useState(false);
+  const [allowAddToCart, setAllowAddToCart] = useState([]);
   const navigate = useNavigate();
 
-  const { authentification, cart, addToCart } = useContext(GlobalContext);
+  const { authentification, cart, addToCart, logout, productImageUrl } = useContext(GlobalContext);
 
   const handleCategorySelect = (e) => {
     console.log('click ', e);
@@ -56,25 +57,34 @@ function Products() {
     if (key === 'ALL') {
       setSelectedProduct(products);
     } else if (
-      key == 'electronics' ||
-      key == 'clothing' ||
-      key == 'home_appliances' ||
-      key == 'books' ||
-      key == 'food'
+      key === 'electronics' ||
+      key === 'clothing' ||
+      key === 'home_appliances' ||
+      key === 'books' ||
+      key === 'food'
     ) {
-      const chosen = products.filter((product) => product.Category == key);
+      const chosen = products.filter((product) => product.Category === key);
       console.log('chosen', chosen);
       setSelectedProduct(chosen);
     } else {
-      const chosen = products.filter((product) => product.Sub_category == key);
+      const chosen = products.filter((product) => product.Sub_category === key);
       console.log('chosen', chosen);
       setSelectedProduct(chosen);
     }
   };
 
-  const handeAddToCart = (Product_id, Product_name, Price, Unit) => {
+  const handleLogOut = () => {
+    logout();
+  };
+
+  const handleAddToCart = (Product_id, Product_name, Price, Unit) => {
+    if (authentification.isAuthenticated === false) {
+      setIsLoginModalOpen(true);
+      return;
+    }
     addToCart(Product_id, Product_name, Price, Unit);
   };
+
   const CategoryMenu = [
     { label: 'All', key: 'ALL' },
     {
@@ -193,6 +203,15 @@ function Products() {
   const TableColumns = [
     {
       title: 'Image',
+      render: (_, { Product_id }) => (
+        <>
+          <img
+            src={`${productImageUrl[Product_id]}`}
+            alt="product"
+            style={{ width: '100px', height: '100px' }}
+          />
+        </>
+      ),
     },
     {
       title: 'Name',
@@ -224,25 +243,34 @@ function Products() {
     {
       title: 'Add to cart',
       render: (_, { Product_id, Product_name, Price, Unit }) => (
-        <>{/* <Button onClick={handeAddToCart}>Add to Cart</Button> */}</>
+        <>
+          <script>console.log(Product_id)</script>
+          <Button
+            disabled={!allowAddToCart[Product_id - 1]}
+            onClick={() => handleAddToCart(Product_id, Product_name, Price, Unit)}
+          >
+            Add to Cart
+          </Button>
+        </>
       ),
     },
   ];
+
   useEffect(() => {
     const fetchProducts = async () => {
-      try {
-        const response = await getProducts();
-        setProducts(response.data.products);
-        setSelectedProduct(response.data.products);
-        console.log('get products');
-      } catch (error) {
-        console.error('Error fetching products:', error);
-      }
-      console.log('authentification', authentification);
+      const response = await getProducts();
+      setProducts(response.data.products);
+      setSelectedProduct(response.data.products);
+      console.log('get products');
     };
 
     fetchProducts();
   }, []);
+
+  useEffect(() => {
+    const newAllowAddToCart = products.map((product) => product.Unit > 0);
+    setAllowAddToCart(newAllowAddToCart);
+  }, [products]);
 
   return (
     <div>
@@ -258,7 +286,10 @@ function Products() {
       </Space.Compact>
       <Button onClick={handleCartOpen}>My Cart</Button>
       {authentification.isAuthenticated ? (
-        <Button>User order history</Button>
+        <>
+          <Button onClick={() => navigate('/history')}>User order history</Button>
+          <Button onClick={handleLogOut}>Logout</Button>
+        </>
       ) : (
         <>
           <Button onClick={handleLoginOpen}>Login</Button>
@@ -275,7 +306,14 @@ function Products() {
         items={CategoryMenu}
       />
       <Table columns={TableColumns} dataSource={selectedProduct} />
-      <Modal title="Cart" open={isCartModalOpen} onCancel={handleCartClose} footer={null}>
+      <Modal
+        title="Cart"
+        open={isCartModalOpen}
+        onCancel={handleCartClose}
+        footer={null}
+        width={2000}
+        zIndex={1000}
+      >
         <Cart />
       </Modal>
     </div>
