@@ -1,10 +1,11 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { GlobalContext } from '../GlobalContext';
 import { Table, Button } from 'antd';
 import { useNavigate } from 'react-router-dom';
-
+import { getProducts } from '../api/api';
 function Cart() {
-  const { cart, addToCart, removeFromCart, clearCart } = useContext(GlobalContext);
+  const { cart, addToCart, removeFromCart, deleteFromCart, clearCart, productImageUrl } =
+    useContext(GlobalContext);
   const navigate = useNavigate();
   const handleAddToCart = (Product_id) => {
     for (let i = 0; i < cart.length; i++) {
@@ -23,6 +24,10 @@ function Cart() {
     removeFromCart(Product_id);
   };
 
+  const handleDeleteFromCart = (Product_id) => {
+    deleteFromCart(Product_id);
+  };
+
   const handlePlaceOrder = () => {
     if (cart.length === 0) {
       alert('Your cart is empty');
@@ -33,6 +38,15 @@ function Cart() {
   const TableColumns = [
     {
       title: 'Image',
+      render: (_, { Product_id }) => (
+        <>
+          <img
+            src={`${productImageUrl[Product_id]}`}
+            alt="product"
+            style={{ width: '100px', height: '100px' }}
+          />
+        </>
+      ),
     },
     {
       title: 'Product Name',
@@ -55,6 +69,7 @@ function Cart() {
         <>
           <Button onClick={() => handleAddToCart(Product_id)}>+</Button>
           <Button onClick={() => handleRemoveFromCart(Product_id)}>-</Button>
+          <Button onClick={() => handleDeleteFromCart(Product_id)}>Delete</Button>
         </>
       ),
     },
@@ -64,7 +79,9 @@ function Cart() {
       <Table columns={TableColumns} dataSource={cart} />
       <Button onClick={clearCart}>Clear Cart</Button>
       <p>Total Price: {cart.reduce((total, item) => total + item.Price * item.Quantity, 0)}</p>
-      <Button onClick={handlePlaceOrder}>Place a order</Button>
+      <Button disabled={cart.length === 0} onClick={handlePlaceOrder}>
+        Place a order
+      </Button>
     </div>
   );
 }

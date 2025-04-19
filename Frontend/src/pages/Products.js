@@ -82,9 +82,16 @@ function Products() {
       setIsLoginModalOpen(true);
       return;
     }
+    for (let i = 0; i < cart.length; i++) {
+      if (cart[i].Product_id === Product_id) {
+        if (cart[i].Quantity >= Unit) {
+          alert('You have reached the maximum quantity for this product');
+          return;
+        }
+      }
+    }
     addToCart(Product_id, Product_name, Price, Unit);
   };
-
   const CategoryMenu = [
     { label: 'All', key: 'ALL' },
     {

@@ -53,6 +53,10 @@ export const GlobalProvider = ({ children }) => {
     }
   };
 
+  const deleteFromCart = (Product_id) => {
+    setCart(cart.filter((item) => item.Product_id !== Product_id));
+  };
+
   const clearCart = () => {
     setCart([]);
   };
@@ -100,6 +104,7 @@ export const GlobalProvider = ({ children }) => {
         cart,
         addToCart,
         removeFromCart,
+        deleteFromCart,
         clearCart,
         logout,
         productImageUrl,

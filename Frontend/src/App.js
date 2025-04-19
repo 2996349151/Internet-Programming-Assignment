@@ -6,13 +6,17 @@ import { DatePicker } from 'antd';
 import Products from './pages/Products';
 import OrderHistory from './pages/Order_history';
 import DeliveryDetails from './pages/Delivery_details';
+import Header from './components/Header';
 function App() {
   return (
-    <Routes>
-      <Route path="/products" element={<Products />} />
-      <Route path="/history" element={<OrderHistory />} />
-      <Route path="/delivery" element={<DeliveryDetails />} />
-    </Routes>
+    <>
+      <Header />
+      <Routes>
+        <Route path="/products" element={<Products />} />
+        <Route path="/history" element={<OrderHistory />} />
+        <Route path="/delivery" element={<DeliveryDetails />} />
+      </Routes>
+    </>
   );
 }
 
