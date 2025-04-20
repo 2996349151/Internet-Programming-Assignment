@@ -4,9 +4,13 @@ import { GlobalContext } from '../GlobalContext';
 function OrderConfirmation({ order_number }) {
   return (
     <div>
-      <h1>Congratulations ! </h1>
-      <h2>Your order has been placed, and your order number is {order_number}</h2>
-      <h2>We will send you a email to confirm your order</h2>
+      <img
+        src="./congratulations.png"
+        alt="congratulations"
+        style={{ width: '500px', height: '300px' }}
+      />
+      <p>Your order has been placed, and your order number is {order_number}</p>
+      <p>We will send you a email to confirm your order</p>
     </div>
   );
 }

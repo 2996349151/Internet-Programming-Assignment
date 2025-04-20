@@ -1,7 +1,7 @@
 import React, { Children, use, useEffect, useState, useContext } from 'react';
 import { SearchOutlined } from '@ant-design/icons';
 import { data, Scripts, useNavigate } from 'react-router-dom';
-import { Button, Table, Input, Space, Menu, Modal } from 'antd';
+import { Button, Table, Input, Space, Menu, Modal, message } from 'antd';
 import { GlobalContext } from '../GlobalContext';
 import { getProducts } from '../api/api';
 import Login from '../components/Login';
@@ -16,7 +16,7 @@ function Products() {
   const [isCartModalOpen, setIsCartModalOpen] = useState(false);
   const [allowAddToCart, setAllowAddToCart] = useState([]);
   const navigate = useNavigate();
-
+  const [messageApi, contextHolder] = message.useMessage();
   const { authentification, cart, addToCart, logout, productImageUrl } = useContext(GlobalContext);
 
   const handleCategorySelect = (e) => {
@@ -85,7 +85,10 @@ function Products() {
     for (let i = 0; i < cart.length; i++) {
       if (cart[i].Product_id === Product_id) {
         if (cart[i].Quantity >= Unit) {
-          alert('You have reached the maximum quantity for this product');
+          messageApi.open({
+            type: 'error',
+            content: 'You have reached the maximum quantity for this product',
+          });
           return;
         }
       }
@@ -281,44 +284,73 @@ function Products() {
 
   return (
     <div>
-      <Space.Compact style={{ width: '50%' }}>
-        <Input
-          placeholder="Input product name to search"
-          allowClear
-          onChange={handleSeachBoxChange}
-        />
-        <Button onClick={handleSearchClick}>
-          <SearchOutlined />
-        </Button>
-      </Space.Compact>
-      <Button onClick={handleCartOpen}>My Cart</Button>
-      {authentification.isAuthenticated ? (
-        <>
-          <Button onClick={() => navigate('/history')}>User order history</Button>
-          <Button onClick={handleLogOut}>Logout</Button>
-        </>
-      ) : (
-        <>
-          <Button onClick={handleLoginOpen}>Login</Button>
-          <Modal title="Login" open={isLoginModalOpen} onCancel={handleLoginClose} footer={null}>
-            <Login />
-          </Modal>
-        </>
-      )}
+      {contextHolder}
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: '20px',
+        }}
+      >
+        <Space.Compact style={{ width: '50%' }}>
+          <Input
+            placeholder="Input product name to search"
+            allowClear
+            onChange={handleSeachBoxChange}
+          />
+          <Button onClick={handleSearchClick}>
+            <SearchOutlined />
+          </Button>
+        </Space.Compact>
+        <div style={{ display: 'flex', gap: '10px' }}>
+          <Button onClick={handleCartOpen} color="danger" variant="solid">
+            My Cart
+          </Button>
+          {authentification.isAuthenticated ? (
+            <>
+              <Button onClick={() => navigate('/history')} type="primary">
+                User order history
+              </Button>
+              <Button onClick={handleLogOut}>Logout</Button>
+            </>
+          ) : (
+            <>
+              <Button onClick={handleLoginOpen} type="primary">
+                Login
+              </Button>
+              <Modal
+                title="Login"
+                open={isLoginModalOpen}
+                onCancel={handleLoginClose}
+                footer={null}
+              >
+                <Login />
+              </Modal>
+            </>
+          )}
+        </div>
+      </div>
+
       <Menu
         onSelect={handleCategorySelect}
         selectedKeys={[selected]}
         defaultOpenKeys={['ALL']}
         mode="horizontal"
         items={CategoryMenu}
+        style={{
+          fontSize: '15px',
+          fontWeight: 'bold',
+          backgroundColor: '#f0f0f0',
+        }}
       />
-      <Table columns={TableColumns} dataSource={selectedProduct} />
+
+      <Table columns={TableColumns} dataSource={selectedProduct} tableLayout="auto" />
       <Modal
-        title="Cart"
         open={isCartModalOpen}
         onCancel={handleCartClose}
         footer={null}
-        width={2000}
+        width={1600}
         zIndex={1000}
       >
         <Cart />

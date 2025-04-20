@@ -19,24 +19,32 @@ function Login() {
 
   const handleLogin = async () => {
     if (username === '' || password === '') {
-      alert('Please enter username or password');
+      // alert('Please enter username or password');
+      messageApi.open({
+        type: 'error',
+        content: 'Please enter username or password',
+      });
     } else {
       const isAuthenticated = await login(username, password);
-      console.log('isAuthenticated', isAuthenticated);
+
       if (isAuthenticated === true) {
-        alert('Login successful');
         setTimeout(() => {
           navigate('/products');
         }, 1000);
       } else {
-        alert('Login failed');
+        messageApi.open({
+          type: 'error',
+          content: 'Login failed',
+        });
       }
     }
   };
 
   return (
     <div>
+      {contextHolder}
       <Input placeholder="username" prefix={<UserOutlined />} onChange={handleusernameChange} />
+      <br />
       <br />
       <Input.Password
         placeholder="password"
@@ -44,7 +52,12 @@ function Login() {
         onChange={handlepasswordChange}
       />
       <br />
-      <Button onClick={handleLogin}>Login</Button>
+      <br />
+      <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <Button onClick={handleLogin} type="primary">
+          Login
+        </Button>
+      </div>
     </div>
   );
 }

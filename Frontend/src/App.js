@@ -1,6 +1,4 @@
-import react from 'react';
 import { Routes, Route } from 'react-router-dom';
-import { DatePicker } from 'antd';
 
 // import components as follows
 import Products from './pages/Products';

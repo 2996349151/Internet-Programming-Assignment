@@ -1,13 +1,19 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+// Let the logo be centered in the header
 
 function Header() {
   return (
     <header
-      style={{ display: 'flex', alignItems: 'center', padding: '10px', backgroundColor: '#f8f9fa' }}
+      style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '100px',
+      }}
     >
       <Link to="/products">
-        <img src="/logo.png" alt="Website Logo" style={{ height: '80px' }} />
+        <img src="/logo.png" alt="Website Logo" />
       </Link>
     </header>
   );

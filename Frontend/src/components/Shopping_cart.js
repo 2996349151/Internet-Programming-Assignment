@@ -1,17 +1,22 @@
 import { useState, useContext, useEffect } from 'react';
 import { GlobalContext } from '../GlobalContext';
-import { Table, Button } from 'antd';
+import { Table, Button, message } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { getProducts } from '../api/api';
+
 function Cart() {
   const { cart, addToCart, removeFromCart, deleteFromCart, clearCart, productImageUrl } =
     useContext(GlobalContext);
   const navigate = useNavigate();
+  const [messageApi, contextHolder] = message.useMessage();
   const handleAddToCart = (Product_id) => {
     for (let i = 0; i < cart.length; i++) {
       if (cart[i].Product_id === Product_id) {
         if (cart[i].Quantity >= cart[i].Unit) {
-          alert('You have reached the maximum quantity for this product');
+          messageApi.open({
+            type: 'error',
+            content: 'You have reached the maximum quantity for this product',
+          });
           return;
         }
         break;
@@ -30,7 +35,10 @@ function Cart() {
 
   const handlePlaceOrder = () => {
     if (cart.length === 0) {
-      alert('Your cart is empty');
+      messageApi.open({
+        type: 'error',
+        content: 'Please add products to cart before placing an order',
+      });
       return;
     }
     navigate('/delivery');
@@ -64,24 +72,52 @@ function Cart() {
       key: 'Quantity',
     },
     {
-      title: '',
+      title: 'Operations',
       render: (_, { Product_id }) => (
-        <>
+        <div style={{ display: 'flex', gap: '10px' }}>
           <Button onClick={() => handleAddToCart(Product_id)}>+</Button>
           <Button onClick={() => handleRemoveFromCart(Product_id)}>-</Button>
-          <Button onClick={() => handleDeleteFromCart(Product_id)}>Delete</Button>
-        </>
+          <Button onClick={() => handleDeleteFromCart(Product_id)} color="danger" variant="solid">
+            Delete
+          </Button>
+        </div>
       ),
     },
   ];
   return (
     <div>
+      {contextHolder}
+      <h1>Shopping Cart</h1>
       <Table columns={TableColumns} dataSource={cart} />
-      <Button onClick={clearCart}>Clear Cart</Button>
-      <p>Total Price: {cart.reduce((total, item) => total + item.Price * item.Quantity, 0)}</p>
-      <Button disabled={cart.length === 0} onClick={handlePlaceOrder}>
-        Place a order
-      </Button>
+      <div
+        style={{
+          margin: '20px',
+          fontSize: '20px',
+          fontWeight: 'bold',
+        }}
+      >
+        Total Price: {cart.reduce((total, item) => total + item.Price * item.Quantity, 0)}
+      </div>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          marginLeft: '20px',
+          marginRight: '20px',
+        }}
+      >
+        <Button onClick={clearCart} color="danger" variant="solid">
+          Clear Cart
+        </Button>
+        <Button
+          disabled={cart.length === 0}
+          onClick={handlePlaceOrder}
+          color="primary"
+          variant="solid"
+        >
+          Place a order
+        </Button>
+      </div>
     </div>
   );
 }

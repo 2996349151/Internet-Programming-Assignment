@@ -58,10 +58,13 @@ function OrderHistory() {
     return (
       <div>
         <Table columns={TableColumns} dataSource={groupedOrders[order_number]} />
-        <h1>
+        <h3 style={{ marginTop: '0px', marginBottom: '0px' }}>
           Total Cost:
-          {groupedOrders[order_number].reduce((acc, order) => acc + order.Cost, 0)}
-        </h1>
+          {groupedOrders[order_number].reduce(
+            (acc, order) => acc + order.Cost * order.Order_unit,
+            0
+          )}
+        </h3>
       </div>
     );
   }
@@ -71,11 +74,11 @@ function OrderHistory() {
     orderNumbers.forEach((order_number) => {
       items.push({
         key: order_number,
-        label: `Order number: ${order_number} 
-            Mobile ${groupedOrders[order_number][0].Mobile_number} 
-            Recipient: ${groupedOrders[order_number][0].Recipient_name} 
-            Street: ${groupedOrders[order_number][0].Street} 
-            City: ${groupedOrders[order_number][0].City} 
+        label: `Order number: ${order_number} --
+            Mobile ${groupedOrders[order_number][0].Mobile_number} --
+            Recipient: ${groupedOrders[order_number][0].Recipient_name} --
+            Street: ${groupedOrders[order_number][0].Street} --
+            City: ${groupedOrders[order_number][0].City} --
             State: ${groupedOrders[order_number][0].State} `,
         children: generateOneGroupedOrderTable(order_number),
       });
@@ -104,8 +107,18 @@ function OrderHistory() {
 
   return (
     <div>
-      <Button onClick={() => navigate('/products')}>Back to home</Button>
-      <Collapse items={generateAllGroupedOrderCollapse()} />
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'right',
+          marginTop: '20px',
+          marginBottom: '20px',
+          margin: '20px',
+        }}
+      >
+        <Button onClick={() => navigate('/products')}>Back to home</Button>
+      </div>
+      <Collapse items={generateAllGroupedOrderCollapse()} style={{ margin: '20px' }} />
     </div>
   );
 }
