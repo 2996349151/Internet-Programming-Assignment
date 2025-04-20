@@ -4,6 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import { Input, Button, Form, Modal, Select } from 'antd';
 import { placeOrder, getProducts } from '../api/api';
 import OrderConfirmation from '../components/Order_confirmation';
+
+// This page is used to get the delivery details from the user
+// and place the order. It also checks the availability of the products in the cart.
 function DeliveryDetails() {
   const [deliveryDetails, setDeliveryDetails] = useState({
     Mobile_number: '',
@@ -37,6 +40,8 @@ function DeliveryDetails() {
     );
     setIsFormValid(isValid);
   }
+
+  // PLace the order, and check the availability before placing the order
   async function handlePlaceOrder() {
     const isAvailable = await checkAvailability();
     if (isAvailable === false) {
@@ -88,6 +93,7 @@ function DeliveryDetails() {
     navigate('/products');
   }
 
+  // Check the availability of the products in the cart
   async function checkAvailability() {
     const response = await fetchProducts();
     const fetchedProducts = response.data.products;
@@ -120,7 +126,6 @@ function DeliveryDetails() {
   }
 
   // Get all products to check availability
-
   async function fetchProducts() {
     const response = await getProducts();
     setProducts(response.data.products);

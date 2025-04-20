@@ -54,6 +54,7 @@ function OrderHistory() {
     console.log('orderNumbers', orderNumbers);
   }
 
+  // generate the table for each order number
   function generateOneGroupedOrderTable(order_number) {
     return (
       <div>
@@ -69,6 +70,7 @@ function OrderHistory() {
     );
   }
 
+  // generate the collapse for all order numbers
   function generateAllGroupedOrderCollapse() {
     const items = [];
     orderNumbers.forEach((order_number) => {
@@ -85,6 +87,8 @@ function OrderHistory() {
     });
     return items;
   }
+
+  // fetch the order history and products
   useEffect(() => {
     const fetchOrderHistory = async () => {
       const response = await getOrderHistory(authentification.username, authentification.password);
@@ -97,10 +101,9 @@ function OrderHistory() {
     };
     fetchProducts();
     fetchOrderHistory();
-
-    // Every order has a order number, so mltiple orders rows actually can belong to one order, now we need to group them
   }, []);
 
+  // group the orders by order number
   useEffect(() => {
     groupOrder();
   }, [history]);

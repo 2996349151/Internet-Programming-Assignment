@@ -9,6 +9,7 @@ function Cart() {
     useContext(GlobalContext);
   const navigate = useNavigate();
   const [messageApi, contextHolder] = message.useMessage();
+
   const handleAddToCart = (Product_id) => {
     for (let i = 0; i < cart.length; i++) {
       if (cart[i].Product_id === Product_id) {

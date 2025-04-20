@@ -19,7 +19,6 @@ function Login() {
 
   const handleLogin = async () => {
     if (username === '' || password === '') {
-      // alert('Please enter username or password');
       messageApi.open({
         type: 'error',
         content: 'Please enter username or password',

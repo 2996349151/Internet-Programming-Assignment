@@ -1,21 +1,25 @@
 from fastapi import FastAPI
 from database import MYDB
 from pydantic import BaseModel
-
-app = FastAPI()
-
 from fastapi.middleware.cors import CORSMiddleware
 
+# create FastAPI instance
+app = FastAPI()
+
+# Allow CORS for all origins
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allow all origins (or specify your frontend URL)
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-# Test database command
+
+# create database instance
 DB = MYDB()
 
+
+# check authentication
 def check_Authentication(username, password):
     return DB.check_authentication(username, password)
 
@@ -24,53 +28,63 @@ def check_Authentication(username, password):
 def read_root():
     return {"Hello": "World"}
 
-# Get products
+
+# Get all products
 @app.get("/products")
 def show_products():
-    
+
     products = DB.get_products()
     products = [dict(row._mapping) for row in products]
     return {"products": products}
 
+
 # Get products by category
 @app.get("/products/category={category}")
-def show_products_by_category(category):  
+def show_products_by_category(category):
     products = DB.get_products_by_category(category)
     products = [dict(row._mapping) for row in products]
     return {"products": products}
 
+
 # Get products by sub_category
 @app.get("/products/sub_category={sub_category}")
-def show_products_by_sub_category(sub_category):  
+def show_products_by_sub_category(sub_category):
     products = DB.get_products_by_sub_category(sub_category)
     products = [dict(row._mapping) for row in products]
     return {"products": products}
 
-# Get orders
+
+# Get all orders
 @app.get("/orders")
 def show_orders():
-    
+
     orders = DB.get_orders()
     orders = [dict(row._mapping) for row in orders]
     return {"orders": orders}
 
-# Get users
+
+# Get all users
 @app.get("/users/")
 def show_users():
-    
+
     users = DB.get_users()
     users = [dict(row._mapping) for row in users]
     return {"users": users}
 
-#Get user history
+
+# Get certain user history
 class UserHistoryRequest(BaseModel):
     username: str
     password: str
+
+
 @app.post("/history")
 def show_user_history(user_history_request: UserHistoryRequest):
-    if not check_Authentication(user_history_request.username, user_history_request.password):
+    if not check_Authentication(
+        user_history_request.username, user_history_request.password
+    ):
         return {"error": "Authentication failed"}
-    
+
     user_id = DB.get_user_id(user_history_request.username)
     if user_id is None:
         return {"error": "User not found"}
@@ -82,23 +96,12 @@ def show_user_history(user_history_request: UserHistoryRequest):
     orders = [dict(row._mapping) for row in orders]
     return {"orders": orders}
 
-# @app.get("/users/username={user_name}&password={password}")
-# def show_user_history(user_name, password):
-#     if not check_Authentication(user_name, password):
-#         return {"error": "Authentication failed"}
-    
-#     user_id = DB.get_user_id(user_name)
-#     if user_id is None:
-#         return {"error": "User not found"}
-#     orders = DB.show_order_history(user_id)
-#     orders = [dict(row._mapping) for row in orders]
-#     return {"orders": orders}
 
-    
-# login
+# Login
 class LoginRequest(BaseModel):
     username: str
     password: str
+
 
 @app.post("/login")
 def login_user(login_request: LoginRequest):
@@ -106,6 +109,7 @@ def login_user(login_request: LoginRequest):
         return {"code": 1, "message": "Login successful"}
     else:
         return {"code": 0, "message": "Invalid username or password"}
+
 
 # Place the order using JSON payload
 class OrderRequest(BaseModel):
@@ -122,6 +126,7 @@ class OrderRequest(BaseModel):
     product_id_list: list[int]
     order_number: int
 
+
 @app.post("/place_order")
 def place_order(order: OrderRequest):
     if not check_Authentication(order.username, order.password):
@@ -131,15 +136,15 @@ def place_order(order: OrderRequest):
         return {"error": "User not found"}
     DB.place_order(
         order.order_number,
-        order.order_unit_list, 
-        order.cost_list, 
-        order.mobile_number, 
-        order.recipient_name, 
-        order.recipient_email, 
-        order.street, 
-        order.city, 
-        order.state, 
-        user_id, 
+        order.order_unit_list,
+        order.cost_list,
+        order.mobile_number,
+        order.recipient_name,
+        order.recipient_email,
+        order.street,
+        order.city,
+        order.state,
+        user_id,
         order.product_id_list,
-        )
+    )
     return {"message": "Order placed successfully"}

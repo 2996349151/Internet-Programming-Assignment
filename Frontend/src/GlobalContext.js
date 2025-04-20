@@ -2,15 +2,20 @@ import React, { createContext, useContext, useState } from 'react';
 import { getLogin } from './api/api';
 export const GlobalContext = createContext();
 
+// This file is used to create a global context for the application
+
 export const GlobalProvider = ({ children }) => {
+  // Authentification state
   const [authentification, setAuthentication] = useState({
     isAuthenticated: false,
     username: '',
     password: '',
   });
 
+  // Cart state
   const [cart, setCart] = useState([]);
 
+  // Function to login
   const login = async (username, password) => {
     const isLogin = await getLogin(username, password);
     if (isLogin == true) {
@@ -25,6 +30,7 @@ export const GlobalProvider = ({ children }) => {
     }
   };
 
+  // Function to add one item to cart
   const addToCart = (Product_id, Product_name, Price, Unit) => {
     const existingItem = cart.find((item) => item.Product_id === Product_id);
     if (existingItem) {
@@ -38,6 +44,7 @@ export const GlobalProvider = ({ children }) => {
     }
   };
 
+  // Function to remove one item from cart
   const removeFromCart = (Product_id) => {
     const existingItem = cart.find((item) => item.Product_id === Product_id);
     if (existingItem) {
@@ -53,14 +60,17 @@ export const GlobalProvider = ({ children }) => {
     }
   };
 
+  // Function to delete one item from cart
   const deleteFromCart = (Product_id) => {
     setCart(cart.filter((item) => item.Product_id !== Product_id));
   };
 
+  // Function to clear cart
   const clearCart = () => {
     setCart([]);
   };
 
+  // Function to logout
   const logout = () => {
     setAuthentication({
       isAuthenticated: false,
@@ -70,6 +80,7 @@ export const GlobalProvider = ({ children }) => {
     clearCart();
   };
 
+  // Table for Product_id and image url
   const [productImageUrl, setProductImageUrl] = useState({
     1: '/products/iphone_14.jpeg',
     2: '/products/samsung_galaxy_s23.jpeg',

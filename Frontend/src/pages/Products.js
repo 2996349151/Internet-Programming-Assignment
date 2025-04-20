@@ -95,6 +95,8 @@ function Products() {
     }
     addToCart(Product_id, Product_name, Price, Unit);
   };
+
+  // This is the menu for the categories
   const CategoryMenu = [
     { label: 'All', key: 'ALL' },
     {
@@ -210,6 +212,7 @@ function Products() {
     },
   ];
 
+  // This is the table columns for the products
   const TableColumns = [
     {
       title: 'Image',
@@ -266,6 +269,7 @@ function Products() {
     },
   ];
 
+  // Fetch the products at the beginning
   useEffect(() => {
     const fetchProducts = async () => {
       const response = await getProducts();
@@ -277,6 +281,7 @@ function Products() {
     fetchProducts();
   }, []);
 
+  // Set the available products to add to cart
   useEffect(() => {
     const newAllowAddToCart = products.map((product) => product.Unit > 0);
     setAllowAddToCart(newAllowAddToCart);
