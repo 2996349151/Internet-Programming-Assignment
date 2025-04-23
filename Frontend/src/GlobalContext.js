@@ -31,7 +31,7 @@ export const GlobalProvider = ({ children }) => {
   };
 
   // Function to add one item to cart
-  const addToCart = (Product_id, Product_name, Price, Unit) => {
+  const addToCart = (Product_id, Product_name, Price, Unit, Danwei) => {
     const existingItem = cart.find((item) => item.Product_id === Product_id);
     if (existingItem) {
       setCart(
@@ -40,7 +40,7 @@ export const GlobalProvider = ({ children }) => {
         )
       );
     } else {
-      setCart([...cart, { Product_id, Product_name, Price, Unit, Quantity: 1 }]);
+      setCart([...cart, { Product_id, Product_name, Price, Unit, Danwei, Quantity: 1 }]);
     }
   };
 
@@ -92,7 +92,7 @@ export const GlobalProvider = ({ children }) => {
     8: '/products/lg_oled_tv.jpeg',
     9: '/products/sony_bravia.jpeg',
     10: '/products/t_shirt.jpeg',
-    11: '/prodcuts/polo_shirt.jpeg',
+    11: '/products/polo_shirt.jpeg',
     12: '/products/formal_shirt.jpeg',
     13: '/products/jeans.jpeg',
     14: '/products/chinos.jpeg',

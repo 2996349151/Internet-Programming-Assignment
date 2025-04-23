@@ -73,6 +73,11 @@ function Cart() {
       key: 'Quantity',
     },
     {
+      title: 'Unit',
+      dataIndex: 'Danwei',
+      key: 'Danwei',
+    },
+    {
       title: 'Operations',
       render: (_, { Product_id }) => (
         <div style={{ display: 'flex', gap: '10px' }}>

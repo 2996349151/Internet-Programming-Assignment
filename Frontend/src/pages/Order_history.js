@@ -25,7 +25,7 @@ function OrderHistory() {
       },
     },
     {
-      title: 'Order_unit',
+      title: 'Order_quantity',
       dataIndex: 'Order_unit',
       key: 'Order_unit',
     },

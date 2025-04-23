@@ -1,4 +1,4 @@
--- Active: 1744610764034@@127.0.0.1@3306@Shopping_websiteDB
+-- Active: 1745131725411@@127.0.0.1@3306@Shopping_websiteDB
 DROP DATABASE IF EXISTS Shopping_websiteDB;
 CREATE DATABASE Shopping_websiteDB;
 USE Shopping_websiteDB;
@@ -8,6 +8,7 @@ CREATE TABLE Products (
     Product_name VARCHAR(255) NOT NULL,
     Price INT NOT NULL,
     Unit INT NOT NULL,
+    Danwei VARCHAR(255) NOT NULL,
     Category ENUM('electronics', 'clothing', 'home_appliances', 'books', 'food') NOT NULL,
     Sub_category ENUM('mobile', 'laptop', 'tv', 
                     'shirt', 'pants', 'hat', 
@@ -50,39 +51,39 @@ CREATE TABLE Orders (
 );
 
 -- Insert sample data into Products table
-INSERT INTO Products (Product_name, Price, Unit, Category, Sub_category) VALUES
+INSERT INTO Products (Product_name, Price, Unit, Danwei, Category, Sub_category) VALUES
 -- Electronics - Mobile
-('iPhone 14', 1200, 50, 'electronics', 'mobile'),
-('Samsung Galaxy S23', 1000, 0, 'electronics', 'mobile'), -- Out of stock
-('Google Pixel 7', 900, 30, 'electronics', 'mobile'),
+('iPhone 14', 1200, 50, '1 whole', 'electronics', 'mobile'),
+('Samsung Galaxy S23', 1000, 0, '1 whole', 'electronics', 'mobile'), -- Out of stock
+('Google Pixel 7', 900, 30, '1 whole', 'electronics', 'mobile'),
 -- Electronics - Laptop
-('MacBook Pro', 2500, 20, 'electronics', 'laptop'),
-('Dell XPS 13', 2000, 25, 'electronics', 'laptop'),
-('HP Spectre x360', 1800, 0, 'electronics', 'laptop'), -- Out of stock
+('MacBook Pro', 2500, 20, '1 whole', 'electronics', 'laptop'),
+('Dell XPS 13', 2000, 25, '1 whole', 'electronics', 'laptop'),
+('HP Spectre x360', 1800, 0, '1 whole', 'electronics', 'laptop'), -- Out of stock
 -- Electronics - TV
-('Samsung QLED TV', 1500, 10, 'electronics', 'tv'),
-('LG OLED TV', 1400, 0, 'electronics', 'tv'), -- Out of stock
-('Sony Bravia', 1300, 5, 'electronics', 'tv'),
+('Samsung QLED TV', 1500, 10, '1 whole', 'electronics', 'tv'),
+('LG OLED TV', 1400, 0, '1 whole', 'electronics', 'tv'), -- Out of stock
+('Sony Bravia', 1300, 5, '1 whole', 'electronics', 'tv'),
 -- Clothing - Shirt
-('T-shirt', 20, 100, 'clothing', 'shirt'),
-('Polo Shirt', 30, 0, 'clothing', 'shirt'), -- Out of stock
-('Formal Shirt', 40, 50, 'clothing', 'shirt'),
+('T-shirt', 20, 100, 'Pack of 3', 'clothing', 'shirt'),
+('Polo Shirt', 30, 0, 'Pack of 2', 'clothing', 'shirt'), -- Out of stock
+('Formal Shirt', 40, 50, '1 piece', 'clothing', 'shirt'),
 -- Clothing - Pants
-('Jeans', 50, 80, 'clothing', 'pants'),
-('Chinos', 60, 0, 'clothing', 'pants'), -- Out of stock
-('Formal Pants', 70, 40, 'clothing', 'pants'),
+('Jeans', 50, 80, 'Pack of 5', 'clothing', 'pants'),
+('Chinos', 60, 0, 'Pack of 2', 'clothing', 'pants'), -- Out of stock
+('Formal Pants', 70, 40, '1 piece', 'clothing', 'pants'),
 -- Clothing - Hat
-('Baseball Cap', 15, 150, 'clothing', 'hat'),
-('Beanie', 10, 0, 'clothing', 'hat'), -- Out of stock
-('Fedora', 25, 60, 'clothing', 'hat'),
+('Baseball Cap', 15, 150, 'Pack of 3', 'clothing', 'hat'),
+('Beanie', 10, 0, 'Pack of 5', 'clothing', 'hat'), -- Out of stock
+('Fedora', 25, 60, '1 piece', 'clothing', 'hat'),
 -- Food - Apple
-('Red Apple', 2, 300, 'food', 'apple'),
-('Green Apple', 3, 0, 'food', 'apple'), -- Out of stock
-('Golden Apple', 4, 200, 'food', 'apple'),
+('Red Apple', 2, 300, 'Pack of 3', 'food', 'apple'),
+('Green Apple', 3, 0, 'Pack of 6', 'food', 'apple'), -- Out of stock
+('Golden Apple', 4, 200, 'Pack of 2', 'food', 'apple'),
 -- Food - Banana
-('Banana', 1, 400, 'food', 'banana'),
-('Organic Banana', 2, 0, 'food', 'banana'), -- Out of stock
-('Good Banana', 3, 200, 'food', 'banana');
+('Banana', 1, 400, 'Pack of 10', 'food', 'banana'),
+('Organic Banana', 2, 0, 'Pack of 2', 'food', 'banana'), -- Out of stock
+('Good Banana', 3, 200, 'Pack of 5', 'food', 'banana');
 
 INSERT INTO Users (User_name, Email, Password, Role) VALUES
 -- Admins

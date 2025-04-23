@@ -1,7 +1,7 @@
 import React, { Children, use, useEffect, useState, useContext } from 'react';
 import { SearchOutlined } from '@ant-design/icons';
 import { data, Scripts, useNavigate } from 'react-router-dom';
-import { Button, Table, Input, Space, Menu, Modal, message } from 'antd';
+import { Button, Table, Input, Space, Menu, Modal, message, Card, Flex } from 'antd';
 import { GlobalContext } from '../GlobalContext';
 import { getProducts } from '../api/api';
 import Login from '../components/Login';
@@ -77,7 +77,7 @@ function Products() {
     logout();
   };
 
-  const handleAddToCart = (Product_id, Product_name, Price, Unit) => {
+  const handleAddToCart = (Product_id, Product_name, Price, Unit, Danwei) => {
     if (authentification.isAuthenticated === false) {
       setIsLoginModalOpen(true);
       return;
@@ -93,7 +93,7 @@ function Products() {
         }
       }
     }
-    addToCart(Product_id, Product_name, Price, Unit);
+    addToCart(Product_id, Product_name, Price, Unit, Danwei);
   };
 
   // This is the menu for the categories
@@ -212,63 +212,6 @@ function Products() {
     },
   ];
 
-  // This is the table columns for the products
-  const TableColumns = [
-    {
-      title: 'Image',
-      render: (_, { Product_id }) => (
-        <>
-          <img
-            src={`${productImageUrl[Product_id]}`}
-            alt="product"
-            style={{ width: '100px', height: '100px' }}
-          />
-        </>
-      ),
-    },
-    {
-      title: 'Name',
-      dataIndex: 'Product_name',
-      key: 'Product_name',
-    },
-    {
-      title: 'Price',
-      dataIndex: 'Price',
-      key: 'Price',
-    },
-    {
-      title: 'In stock',
-      render: (_, { Unit }) => (
-        <>
-          {Unit > 0 ? (
-            <span style={{ color: 'green' }}>In stock</span>
-          ) : (
-            <span style={{ color: 'red' }}>Out of stock</span>
-          )}
-        </>
-      ),
-    },
-    {
-      title: 'Unit',
-      dataIndex: 'Unit',
-      key: 'Unit',
-    },
-    {
-      title: 'Add to cart',
-      render: (_, { Product_id, Product_name, Price, Unit }) => (
-        <>
-          <script>console.log(Product_id)</script>
-          <Button
-            disabled={!allowAddToCart[Product_id - 1]}
-            onClick={() => handleAddToCart(Product_id, Product_name, Price, Unit)}
-          >
-            Add to Cart
-          </Button>
-        </>
-      ),
-    },
-  ];
-
   // Fetch the products at the beginning
   useEffect(() => {
     const fetchProducts = async () => {
@@ -348,9 +291,47 @@ function Products() {
           fontWeight: 'bold',
           backgroundColor: '#f0f0f0',
         }}
-      />
+      ></Menu>
+      <Flex wrap gap="small">
+        {Array.from({ length: selectedProduct.length }, (_, index) => (
+          <Card
+            title={selectedProduct[index].Product_name}
+            style={{ width: '18%', justifyContent: 'center' }}
+          >
+            <img
+              src={`${productImageUrl[selectedProduct[index].Product_id]}`}
+              alt="product"
+              style={{ width: '100px', height: '100px' }}
+            />
+            <p>Price: {selectedProduct[index].Price}$</p>
+            <p>Quantity: {selectedProduct[index].Unit}</p>
+            <p>Unit: {selectedProduct[index].Danwei}</p>
+            <p>
+              {selectedProduct[index].Unit > 0 ? (
+                <span style={{ color: 'green' }}>In stock</span>
+              ) : (
+                <span style={{ color: 'red' }}>Out of stock</span>
+              )}
+            </p>
 
-      <Table columns={TableColumns} dataSource={selectedProduct} tableLayout="auto" />
+            <Button
+              disabled={!allowAddToCart[selectedProduct[index].Product_id - 1]}
+              onClick={() =>
+                handleAddToCart(
+                  selectedProduct[index].Product_id,
+                  selectedProduct[index].Product_name,
+                  selectedProduct[index].Price,
+                  selectedProduct[index].Unit,
+                  selectedProduct[index].Danwei
+                )
+              }
+            >
+              Add to Cart
+            </Button>
+          </Card>
+        ))}
+      </Flex>
+
       <Modal
         open={isCartModalOpen}
         onCancel={handleCartClose}
